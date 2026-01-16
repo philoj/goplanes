@@ -3,7 +3,7 @@ package physics
 import (
 	"math"
 
-	geometry2 "github.com/philoj/goplanes/client/internal/geometry"
+	"github.com/philoj/goplanes/client/pkg/geometry"
 )
 
 type Tracker interface {
@@ -29,17 +29,17 @@ type SimpleTracker struct {
 }
 
 func (t *SimpleTracker) UpdateFollower() {
-	d := geometry2.AxialDistance(t.follower.Location(), t.leader.Location())
+	d := geometry.AxialDistance(t.follower.Location(), t.leader.Location())
 	if math.Abs(d.I) > t.maxX || math.Abs(d.J) > t.maxY {
-		b := geometry2.BisectRectangle(t.follower.Location(), t.leader.Location(), geometry2.Vector{
+		b := geometry.BisectRectangle(t.follower.Location(), t.leader.Location(), geometry.Vector{
 			I: t.follower.Location().I - t.maxX,
 			J: t.follower.Location().J - t.maxY,
-		}, geometry2.Vector{
+		}, geometry.Vector{
 			I: t.follower.Location().I + t.maxX,
 			J: t.follower.Location().J + t.maxY,
 		})
-		v := geometry2.AxialDistance(b, t.leader.Location())
-		h := geometry2.Theta(v)
+		v := geometry.AxialDistance(b, t.leader.Location())
+		h := geometry.Theta(v)
 		t.follower.Turn(h)
 		t.follower.Move(v.Size() * t.velocity)
 	}

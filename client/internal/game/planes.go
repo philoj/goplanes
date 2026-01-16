@@ -12,14 +12,14 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/philoj/goplanes/client/internal/geometry"
 	"github.com/philoj/goplanes/client/internal/lobby"
-	"github.com/philoj/goplanes/client/internal/physics"
 	"github.com/philoj/goplanes/client/internal/players"
-	"github.com/philoj/goplanes/client/internal/plot"
-	"github.com/philoj/goplanes/client/internal/render"
 	_ "github.com/philoj/goplanes/client/internal/statik"
-	"github.com/philoj/goplanes/client/internal/touch"
+	"github.com/philoj/goplanes/client/pkg/draw"
+	"github.com/philoj/goplanes/client/pkg/geometry"
+	"github.com/philoj/goplanes/client/pkg/physics"
+	"github.com/philoj/goplanes/client/pkg/render"
+	"github.com/philoj/goplanes/client/pkg/touch"
 	"github.com/rakyll/statik/fs"
 )
 
@@ -100,7 +100,7 @@ var drawSum, drawCount int64
 func (g *Planes) Draw(screen *ebiten.Image) {
 	t := time.Now()
 	// background
-	plot.LaySquareTiles(screen, g.images[bgImageAssetId].image, g.camera.Location().Negate())
+	draw.LaySquareTiles(screen, g.images[bgImageAssetId].image, g.camera.Location().Negate())
 
 	// player
 	g.camera.DrawObject(screen, g.images[iconImageAssetId].image, g.player.Mover)

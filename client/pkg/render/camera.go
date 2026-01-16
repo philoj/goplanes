@@ -2,15 +2,15 @@ package render
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	geometry2 "github.com/philoj/goplanes/client/internal/geometry"
-	"github.com/philoj/goplanes/client/internal/physics"
-	"github.com/philoj/goplanes/client/internal/plot"
+	"github.com/philoj/goplanes/client/pkg/draw"
+	"github.com/philoj/goplanes/client/pkg/geometry"
+	"github.com/philoj/goplanes/client/pkg/physics"
 )
 
 func NewCamera(x, y, i, j, theta, w, h float64) *Camera {
 	return &Camera{
 		Mover: physics.NewMover(x, y, i, j, theta),
-		Rectangle: geometry2.Rectangle{
+		Rectangle: geometry.Rectangle{
 			Width:  w,
 			Height: h,
 		},
@@ -18,7 +18,7 @@ func NewCamera(x, y, i, j, theta, w, h float64) *Camera {
 }
 
 type Camera struct {
-	geometry2.Rectangle
+	geometry.Rectangle
 	physics.Mover
 }
 
@@ -35,8 +35,8 @@ func (c *Camera) BottomBoundary() float64 {
 func (c *Camera) TopBoundary() float64 {
 	return c.Mover.Location().J + (c.Height / 2)
 }
-func (c *Camera) Origin() geometry2.Vector {
-	return geometry2.Vector{
+func (c *Camera) Origin() geometry.Vector {
+	return geometry.Vector{
 		I: c.LeftBoundary(),
 		J: c.BottomBoundary(),
 	}
@@ -44,6 +44,6 @@ func (c *Camera) Origin() geometry2.Vector {
 
 func (c *Camera) DrawObject(screen, img *ebiten.Image, p physics.Mover) {
 	if p.Location().I > c.LeftBoundary() && p.Location().I < c.RightBoundary() && p.Location().J > c.BottomBoundary() && p.Location().J < c.TopBoundary() {
-		plot.DrawImage(screen, img, geometry2.AxialDistance(c.Origin(), p.Location()), p.Heading())
+		draw.InsertImage(screen, img, geometry.AxialDistance(c.Origin(), p.Location()), p.Heading())
 	}
 }

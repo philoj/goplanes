@@ -2,9 +2,6 @@ package game
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-type imageSize struct {
-	width, height int
-}
 type imageInfo struct {
 	path  string
 	image *ebiten.Image

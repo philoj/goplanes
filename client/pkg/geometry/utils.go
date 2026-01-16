@@ -5,31 +5,8 @@ import (
 	"math"
 )
 
-func CartesianDistance(x1, y1, x2, y2 float64) float64 {
-	return math.Sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)))
-}
-
 func RadialToXY(radius, theta float64) (x, y float64) {
 	return radius * math.Cos(theta), radius * math.Sin(theta)
-}
-
-/*
-BisectLine
-Return point (x,y) which bisects the line (x1,y1)-(x2,y2) with distance l from (x1,y1)
-*/
-func BisectLine(p1, p2 Vector, d float64) Vector {
-	l := AxialDistance(p1, p2)
-	theta := math.Atan(l.J / l.I)
-	dx, dy := RadialToXY(d, theta)
-
-	// adjust for the correct trigonometric quadrant
-	if (l.I < 0 && dx > 0) || (l.I > 0 && dx < 0) {
-		dx = -dx
-	}
-	if (l.J < 0 && dy > 0) || (l.J > 0 && dy < 0) {
-		dy = -dy
-	}
-	return Vector{I: p1.I + dx, J: p1.J + dy}
 }
 
 func BisectRectangle(p1, p2, rectMin, rectMax Vector) Vector {

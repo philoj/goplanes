@@ -1,13 +1,13 @@
-package plot
+package draw
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/philoj/goplanes/client/internal/geometry"
+	"github.com/philoj/goplanes/client/pkg/geometry"
 
 	"math"
 )
 
-func DrawImage(screen, img *ebiten.Image, translate geometry.Vector, heading float64) {
+func InsertImage(screen, img *ebiten.Image, translate geometry.Vector, heading float64) {
 	w, h := img.Size()
 	rotScale := &ebiten.DrawImageOptions{}
 	rotScale.GeoM.Translate(-float64(w)/2, -float64(h)/2)

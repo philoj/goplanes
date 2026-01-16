@@ -1,7 +1,7 @@
 package players
 
 import (
-	"github.com/philoj/goplanes/client/internal/physics"
+	"github.com/philoj/goplanes/client/pkg/physics"
 )
 
 type Player struct {

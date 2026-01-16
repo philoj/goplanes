@@ -2,7 +2,7 @@ package touch
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/philoj/goplanes/client/internal/geometry"
+	"github.com/philoj/goplanes/client/pkg/geometry"
 )
 
 type Controller interface {

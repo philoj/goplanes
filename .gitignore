@@ -2,5 +2,5 @@
 .DS_Store
 *.aar
 *.jar
-client/build/
-client/build-platforms/js/dist/
+dist/
+client/build/dist/

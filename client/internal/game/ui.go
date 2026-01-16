@@ -1,8 +1,8 @@
 package game
 
 import (
-	"github.com/philoj/goplanes/client/internal/geometry"
-	"github.com/philoj/goplanes/client/internal/touch"
+	"github.com/philoj/goplanes/client/pkg/geometry"
+	"github.com/philoj/goplanes/client/pkg/touch"
 )
 
 func allButtons(width, height float64) []touch.Button {
