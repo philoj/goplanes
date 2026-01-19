@@ -1,4 +1,4 @@
-The backend server for the game. 
+A 2D game experiment using WebSockets and WebAssembly. 
 
 # Preview
 
