@@ -17,7 +17,4 @@ const (
 	bgImageAssetId   = "tile"
 	iconImageAssetId = "players"
 	blipImageAssetId = "blip"
-
-	leftTouchButtonId  = "left"
-	rightTouchButtonId = "right"
 )

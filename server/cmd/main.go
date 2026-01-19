@@ -16,7 +16,7 @@ var upgrader = &websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		log.Print("origin: ", r.Header.Get("origin"))
+		slog.InfoContext(r.Context(), "Join request from new origin", "origin", r.Header.Get("origin"))
 		return r.Header.Get("origin") == "http://localhost:8081" // FIXME better origin value
 	},
 }

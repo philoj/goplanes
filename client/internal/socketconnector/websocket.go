@@ -3,8 +3,12 @@
 package socketconnector
 
 import (
+	"net/http"
+
 	"github.com/gorilla/websocket"
 )
+
+const origin = "http://localhost:8081"
 
 type socket websocket.Conn
 
@@ -27,7 +31,9 @@ func (s *socket) WriteMessage(data []byte) error {
 }
 
 func NewSocketConnector(url string) (Connector, error) {
-	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	c, _, err := websocket.DefaultDialer.Dial(url, http.Header{
+		"Origin": []string{origin},
+	})
 	s := (*socket)(c)
 	return s, err
 }

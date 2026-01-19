@@ -19,7 +19,6 @@ import (
 	"github.com/philoj/goplanes/client/pkg/geometry"
 	"github.com/philoj/goplanes/client/pkg/physics"
 	"github.com/philoj/goplanes/client/pkg/render"
-	"github.com/philoj/goplanes/client/pkg/touch"
 	"github.com/rakyll/statik/fs"
 )
 
@@ -29,7 +28,6 @@ func NewGame(playerId int, debug bool, host, path string) *Planes {
 		tick:          make(chan bool, 1000),
 		frameRate:     time.NewTicker(30 * time.Millisecond),
 		debug:         debug,
-		touch:         touch.NewTouchController(),
 		images:        images,
 	}
 	game.player = players.NewPlayer(playerId, true, defaultX, defaultY, defaultHeading, 0, 0)
@@ -46,7 +44,6 @@ type Planes struct {
 
 	tick      chan bool
 	input     string
-	touch     touch.Controller
 	frameRate *time.Ticker
 
 	images        map[string]*imageInfo
@@ -64,20 +61,16 @@ func (g *Planes) Update() error {
 	t := time.Now()
 	// update Player
 	g.input = ""
-	g.touch.Read()
 
-	if (ebiten.IsKeyPressed(ebiten.KeyLeft) && !ebiten.IsKeyPressed(ebiten.KeyRight)) ||
-		g.touch.IsButtonPressed(leftTouchButtonId) && !g.touch.IsButtonPressed(rightTouchButtonId) {
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) && !ebiten.IsKeyPressed(ebiten.KeyRight) {
 		g.input = "left"
 		g.player.Rotate(-defaultRotation)
 	}
-	if (ebiten.IsKeyPressed(ebiten.KeyRight) && !ebiten.IsKeyPressed(ebiten.KeyLeft)) ||
-		g.touch.IsButtonPressed(rightTouchButtonId) && !g.touch.IsButtonPressed(leftTouchButtonId) {
+	if ebiten.IsKeyPressed(ebiten.KeyRight) && !ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		g.input = "right"
 		g.player.Rotate(+defaultRotation)
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) ||
-		g.touch.IsButtonPressed(leftTouchButtonId) && g.touch.IsButtonPressed(rightTouchButtonId) {
+	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		g.input += "+up"
 		g.player.Move(defaultAcceleration * initialVelocity)
 	}
@@ -212,9 +205,4 @@ func (g *Planes) loadViewPort() {
 
 	// Tracker to make the camera follow player smoothly
 	g.cameraTracker = physics.NewSimpleTracker(g.camera, g.player, fWidth/2, fHeight/2, cameraVelocity)
-
-	// Mount all touch buttons on the touch controller
-	for _, b := range allButtons(fWidth, fHeight) {
-		g.touch.Mount(b)
-	}
 }

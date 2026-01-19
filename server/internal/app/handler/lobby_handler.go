@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"log/slog"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -31,7 +32,7 @@ func (h *LobbyHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 	conn, err := h.u.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatal(err)
+		slog.ErrorContext(r.Context(), "Failed to upgrade to websocket", "err", err)
 		return
 	}
 	h.svc.CreatePlayer(id, conn)
