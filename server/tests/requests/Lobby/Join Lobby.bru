@@ -1,0 +1,23 @@
+meta {
+  name: Join Lobby
+  type: ws
+  seq: 2
+}
+
+ws {
+  url: {{WS_BASE_URL}}/lobbies/c339d9a3-9742-428c-9317-06d16a751147/join
+  body: ws
+  auth: none
+}
+
+headers {
+  playerID: c339d9a3-9742-428c-9317-06d16a751146
+}
+
+body:ws {
+  name: message 1
+  type: json
+  content: '''
+    {}
+  '''
+}

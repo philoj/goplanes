@@ -1,34 +1,28 @@
 package lobbysvc
 
 import (
+	"context"
+
+	createlobby "github.com/philoj/goplanes/server/internal/app/handler/lobby/create"
 	"github.com/philoj/goplanes/server/internal/domain/model"
 )
 
-type SocketPayload struct {
-	Id  int
-	Msg []byte
+var _ createlobby.LobbyService = &Service{}
+
+type Service struct {
+	repo LobbyRepository
 }
 
-// Lobby the game lobby for players to join
-type Lobby struct {
-	// Registered clients.
-	players map[int]model.PlayerService
-
-	//  msg messages to the clients.
-	msg chan SocketPayload
-
-	// join requests from the clients.
-	join chan model.PlayerService
-
-	// leave requests from clients.
-	leave chan model.PlayerService
-}
-
-func New() *Lobby {
-	return &Lobby{
-		msg:     make(chan SocketPayload),
-		join:    make(chan model.PlayerService),
-		leave:   make(chan model.PlayerService),
-		players: make(map[int]model.PlayerService),
+func NewService(repo LobbyRepository) *Service {
+	return &Service{
+		repo: repo,
 	}
+}
+
+type LobbyRepository interface {
+	CreateLobby(ctx context.Context) (model.Lobby, error)
+}
+
+func (s *Service) CreateLobby(ctx context.Context) (model.Lobby, error) {
+	return s.repo.CreateLobby(ctx)
 }
