@@ -1,40 +1,31 @@
 package main
 
 import (
-	"log"
+	"context"
 	"log/slog"
 	"net/http"
+	"os"
 
-	"github.com/gorilla/websocket"
-	"github.com/philoj/goplanes/server/internal/app/handler"
-	"github.com/philoj/goplanes/server/internal/domain/service/lobby"
+	createlobby "github.com/philoj/goplanes/server/internal/app/handler/lobby/create"
+	"github.com/philoj/goplanes/server/internal/app/handler/lobby/join"
+	"github.com/philoj/goplanes/server/internal/app/socket"
+	lobbysvc "github.com/philoj/goplanes/server/internal/domain/service/lobby"
 )
 
 const port = ":8080"
 
-var upgrader = &websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		slog.InfoContext(r.Context(), "Join request from new origin", "origin", r.Header.Get("origin"))
-		return r.Header.Get("origin") == "http://localhost:8081" // FIXME better origin value
-	},
-}
-
 func main() {
-	// Start the lobby
-	l := lobbysvc.New()
-	go l.Run()
+	ctx := context.Background()
+	mux := http.NewServeMux()
 
-	// Lobby handler websocket endpoint
-	lobbyHandler := handler.NewLobbyHandler(upgrader, l)
-	http.HandleFunc("/lobby/", lobbyHandler.Handle)
+	lobbySvc := lobbysvc.NewService(nil)
 
-	slog.Info("Starting server", "port", port)
-	err := http.ListenAndServe(port, nil)
+	mux.Handle("POST /lobbies", createlobby.NewHandler(lobbySvc))
+	mux.Handle("GET /lobbies/{lobbyID}/join", joinlobby.NewHandler(socket.NewUpgrader()))
 
-	// Server exit
+	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
-		log.Fatal("Server failure: ", err)
+		slog.ErrorContext(ctx, "Server exited with error", err)
+		os.Exit(1)
 	}
 }
