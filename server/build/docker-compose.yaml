@@ -1,33 +1,35 @@
-version: "3.9"
+name: goplanes
 
 services:
-  postgres:
+  goplanes_db:
+    container_name: goplanes_db
     image: postgres:16
-    container_name: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: goplanes
-      POSTGRES_PASSWORD: goplanespassword
+      POSTGRES_USER: root
       POSTGRES_DB: goplanes
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432"
+      - "5432:5432" # TODO NOT necessary once code is also containerized
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - goplanes_db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U goplanes"]
+      test: ["CMD-SHELL", "pg_isready -U root"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  redis:
+  goplanes_redis:
+    container_name: goplanes_redis
     image: redis:7
-    container_name: redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
-    command: redis-server --appendonly yes
+      - goplanes_redis:/data
+    command: [
+      "redis-server", "--appendonly", "yes"
+    ]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -35,5 +37,5 @@ services:
       retries: 5
 
 volumes:
-  postgres_data:
-  redis_data:
+  goplanes_db:
+  goplanes_redis:
