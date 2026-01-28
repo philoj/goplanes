@@ -3,7 +3,8 @@ package lobbysvc
 import (
 	"context"
 
-	createlobby "github.com/philoj/goplanes/server/internal/app/handler/lobby/create"
+	"github.com/google/uuid"
+	"github.com/philoj/goplanes/server/internal/app/api/handler/lobby/create"
 	"github.com/philoj/goplanes/server/internal/domain/model"
 )
 
@@ -20,9 +21,9 @@ func NewService(repo LobbyRepository) *Service {
 }
 
 type LobbyRepository interface {
-	CreateLobby(ctx context.Context) (model.Lobby, error)
+	CreateLobby(ctx context.Context, ownerID uuid.UUID, name string) (model.Lobby, error)
 }
 
-func (s *Service) CreateLobby(ctx context.Context) (model.Lobby, error) {
-	return s.repo.CreateLobby(ctx)
+func (s *Service) CreateLobby(ctx context.Context, ownerID uuid.UUID, name string) (model.Lobby, error) {
+	return s.repo.CreateLobby(ctx, ownerID, name)
 }

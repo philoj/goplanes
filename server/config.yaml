@@ -1,0 +1,5 @@
+
+auto_migrate: true
+
+server:
+  port: 8080
