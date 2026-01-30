@@ -1,7 +1,11 @@
 .PHONY: server client
 
 install:
-	go install github.com/rakyll/statik@latest
+	@go install github.com/rakyll/statik@latest
+	@go install github.com/pressly/goose/v3/cmd/goose@v3.26.0
+
+server-dep:
+	@docker compose -f ./server/build/docker-compose.yaml up -d
 
 server:
 	go run ./server/cmd

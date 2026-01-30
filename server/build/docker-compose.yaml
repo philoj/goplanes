@@ -1,0 +1,54 @@
+name: goplanes
+
+services:
+  goplanes_db:
+    container_name: goplanes_db
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_DB: goplanes
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432" # TODO NOT necessary once code is also containerized
+    volumes:
+      - goplanes_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  goplanes_redis:
+    container_name: goplanes_redis
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - goplanes_redis:/data
+    command: [
+      "redis-server", "--appendonly", "yes"
+    ]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  goplanes_dex:
+    container_name: goplanes_dex
+    image: dexidp/dex:v2.44.0-alpine
+    command: ["dex", "serve", "/var/config.yaml"]
+    ports:
+      - "127.0.0.1:5556:5556"
+      - "127.0.0.1:5557:5557"
+      - "127.0.0.1:5558:5558"
+    volumes:
+      - ./dex.config.yaml:/var/config.yaml:ro
+      - goplanes_dex:/var/dex
+
+volumes:
+  goplanes_db:
+  goplanes_redis:
+  goplanes_dex:
